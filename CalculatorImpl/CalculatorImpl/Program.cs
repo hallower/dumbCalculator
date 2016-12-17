@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-
     class CalculatorImpl
     {
         public enum WorkingStatus
@@ -21,13 +20,13 @@ namespace Calculator
         }
 
         // TODO : add more operators
-        private Dictionary<string,int> OperatorsPriority = new Dictionary<string, int>
+        private Dictionary<String, IOperator> operatorsPriority = new Dictionary<string, IOperator>()
         {
-            { "*", 3 },
-            { "/", 3 },
-            { "+", 2 },
-            { "-", 2 },
-            { "(", 1 }
+            { Plus.Operator, new Plus()},
+            { Minus.Operator, new Minus()},
+            { Multiply.Operator, new Multiply()},
+            { Divide.Operator, new Divide()},
+            { BraceL.Operator, new BraceL()},
         };
 
         private Queue<string> seperated = new Queue<string>();
@@ -77,6 +76,7 @@ namespace Calculator
             }
 
             {
+                Console.Out.Write("Postfix => ");
                 foreach (var item in postfix)
                 {
                     Console.Out.Write(item + " ");
@@ -86,24 +86,52 @@ namespace Calculator
 
             Stack<string> operand = new Stack<string>();
 
-            foreach(var token in postfix)
+            try
             {
-                double result;
-                if (Double.TryParse(token, out result))
+                foreach (var token in postfix)
                 {
-                    operand.Push(token);
+                    double result;
+                    if (Double.TryParse(token, out result))
+                    {
+                        operand.Push(token);
+                    }
+                    else
+                    {
+                        IOperator op = operatorsPriority[token];
+                        string op1 = "";
+                        string op2 = "";
+
+                        switch(op.NumberOfOperand)
+                        {
+                            case 2:
+                                op2 = operand.Pop();
+                                op1 = operand.Pop();
+                                break;
+                            case 1:
+                                op1 = operand.Pop();
+                                break;
+                        }
+
+                        double _op1;
+                        double _op2;
+                        
+                        Double.TryParse(op1, out _op1);
+                        Double.TryParse(op2, out _op2);
+                        if (false == op.GetResult(_op1, _op2, out result))
+                        {
+                            // TODO : throw with each operator's reason
+                            Console.Out.WriteLine("Calculate is failed!!!");
+                            return false;
+                        }
+                        operand.Push(result.ToString());
+                    }
                 }
-                else
-                {
-                    // TODO : check a number of operator's operand
-                    string op2 = operand.Pop();
-                    string op1 = operand.Pop();
-                    result = getResult(token, op1, op2);
-                    operand.Push(result.ToString());
-                }
+            }catch(Exception e)
+            {
+                Console.Out.WriteLine("Exception, Calculate is failed!!!, " + e.Message);
+                return false;
             }
 
-            Console.Out.WriteLine("Result = " + operand.Peek());
             double ret;
             if(false == Double.TryParse(operand.Peek(), out ret))
             {
@@ -113,42 +141,6 @@ namespace Calculator
             return true;
         }
 
-        private double getResult(string op, string op1, string op2)
-        {
-            double _op1;
-            double _op2;
-
-            try
-            {
-                Double.TryParse(op1, out _op1);
-                Double.TryParse(op2, out _op2);
-            }catch(Exception e)
-            {
-                Console.Out.WriteLine("Wrong argument, op = {0}, op1 = {1}, op2 = {2}",
-                    op, op1, op2);
-                return 0;
-            }
-
-            if(0 == op.CompareTo("*"))
-            {
-                return _op1 * _op2;
-            }
-            else if (0 == op.CompareTo("/"))
-            {
-                return _op1 / _op2;
-            }
-            else if (0 == op.CompareTo("+"))
-            {
-                return _op1 + _op2;
-            }
-            else if (0 == op.CompareTo("-"))
-            {
-                return _op1 - _op2;
-            }
-            Console.Out.WriteLine("Wrong opertor!!!, " + op);
-            return 0;
-        }
-        
         private bool ChangeToPostfix(out Queue<string> ret)
         {
             Queue<string> postfix = new Queue<string>();
@@ -181,7 +173,7 @@ namespace Calculator
                     else
                     {
                         while ((operators.Count > 0) &&
-                            (OperatorsPriority[operators.Peek()] >= OperatorsPriority[token]))
+                            (operatorsPriority[operators.Peek()].Priority >= operatorsPriority[token].Priority))
                         {
                             postfix.Enqueue(operators.Pop());
                         }
@@ -212,9 +204,11 @@ namespace Calculator
 
             Dictionary<String, Double> tc = new Dictionary<String, Double>
             {
+                {"1 + 3", 4 },
+                {"0 / 0", 0 },
+                {"2 + 4 * 5 # 6", 0 },
                 {"2 + 3 - 5 * 5 + 6 / 2", -17 },
                 {"23 * 5 / 2 + 4 * 6", 81.5 },
-                {"2 + 4 * 5 # 6", 0 },
                 {"45 + 3 * 5 - 2 + 5 / 2 * 7", 75.5 },
                 {"( 1 + 2 ) * ( 3 + 4 )", 21 },
                 {"( 1 + 2 ) * 3", 9 },
