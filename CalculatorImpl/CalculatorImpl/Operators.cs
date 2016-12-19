@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Calculator
+namespace CalculatorImpl
 {
     public interface IOperator
     {
@@ -74,6 +74,20 @@ namespace Calculator
     class BraceL : IOperator
     {
         public static string Operator = "(";
+        public string GetOperator { get { return Operator; } }
+        public int Priority { get { return 1; } }
+        public int NumberOfOperand { get { return 0; } }
+
+        public bool GetResult(double left, double right, out double result)
+        {
+            result = 0;
+            return true;
+        }
+    }
+
+    class BraceR : IOperator
+    {
+        public static string Operator = ")";
         public string GetOperator { get { return Operator; } }
         public int Priority { get { return 1; } }
         public int NumberOfOperand { get { return 0; } }
