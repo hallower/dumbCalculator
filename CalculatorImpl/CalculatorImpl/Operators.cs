@@ -98,5 +98,21 @@ namespace CalculatorImpl
             return true;
         }
     }
+
+    class Percentage : IOperator
+    {
+        public static string Operator = "%";
+        public string GetOperator { get { return Operator; } }
+        public int Priority { get { return 3; } }
+        public int NumberOfOperand { get { return 1; } }
+
+        public bool GetResult(double left, double right, out double result)
+        {
+            result = left / 100D;
+            return true;
+        }
+    }
+
+
 }
 

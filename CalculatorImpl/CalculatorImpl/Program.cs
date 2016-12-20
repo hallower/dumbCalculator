@@ -106,6 +106,28 @@ namespace CalculatorImpl
             ci.SetOneWord("+");
             ci.SetOneWord("10");
 
+            ci.Clear();
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Clear(c), Delete Last(b), Quit(q)");
+            sb.AppendLine("+/-(r), ");
+
+            char key = Console.ReadKey(true).KeyChar;
+            while (key != 'q')
+            {
+                switch(key)
+                {
+                    case 'c': ci.Clear(); break;
+                    case 'd': ci.DeleteOneWord(); break;
+                    case 'r': ci.ReverseSign(); break;
+                    case 'q': break;
+                    default:
+                        ci.SetOneWord(key.ToString());
+                        break;
+                }
+                key = Console.ReadKey(true).KeyChar;
+            }
+
             return;
         }
     }

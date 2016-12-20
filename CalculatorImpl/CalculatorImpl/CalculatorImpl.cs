@@ -28,6 +28,7 @@ namespace CalculatorImpl
             { Divide.Operator, new Divide()},
             { BraceL.Operator, new BraceL()},
             { BraceR.Operator, new BraceR()},
+            { Percentage.Operator, new Percentage()},
         };
 
         private List<string> seperated = new List<string>();
@@ -117,6 +118,23 @@ namespace CalculatorImpl
                 seperated.RemoveAt(seperated.Count - 1);
             }
 
+            Calculate();
+        }
+
+        public void ReverseSign()
+        {
+            double lastNumber;
+            if (seperated.Count == 0)
+            {
+                return;
+            }
+
+            if (false == Double.TryParse(seperated.Last(), out lastNumber))
+            {
+                return;
+            }
+            seperated[seperated.Count - 1] = (lastNumber * -1).ToString();
+            
             Calculate();
         }
 
