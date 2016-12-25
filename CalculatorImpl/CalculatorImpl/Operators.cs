@@ -14,6 +14,27 @@ namespace CalculatorImpl
         bool GetResult(double left, double right, out double result);
     }
 
+    public static class Operators
+    {
+        private static Dictionary<String, IOperator> operators = new Dictionary<string, IOperator>()
+        {
+            { Plus.Operator, new Plus()},
+            { Minus.Operator, new Minus()},
+            { Multiply.Operator, new Multiply()},
+            { Divide.Operator, new Divide()},
+            { BraceL.Operator, new BraceL()},
+            { BraceR.Operator, new BraceR()},
+            { Percentage.Operator, new Percentage()},
+        };
+
+        public static Dictionary<String, IOperator> OperatorList
+        {
+            get
+            {
+                return operators;
+            }
+        }
+    }
 
     class Plus : IOperator
     {
@@ -113,6 +134,25 @@ namespace CalculatorImpl
         }
     }
 
+    class Point : IOperator
+    {
+        public static string Operator = ".";
+        public string GetOperator { get { return Operator; } }
+        public int Priority { get { return 3; } }
+        public int NumberOfOperand { get { return 2; } }
+
+        public bool GetResult(double left, double right, out double result)
+        {
+            double digits = right;
+            while(digits >= 1)
+            {
+                digits /= 10;
+            }
+
+            result = left + digits;
+            return true;
+        }
+    }
 
 }
 

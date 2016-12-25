@@ -19,17 +19,7 @@ namespace CalculatorImpl
             private set;
         }
 
-        // TODO : add more operators
-        private Dictionary<String, IOperator> operatorsPriority = new Dictionary<string, IOperator>()
-        {
-            { Plus.Operator, new Plus()},
-            { Minus.Operator, new Minus()},
-            { Multiply.Operator, new Multiply()},
-            { Divide.Operator, new Divide()},
-            { BraceL.Operator, new BraceL()},
-            { BraceR.Operator, new BraceR()},
-            { Percentage.Operator, new Percentage()},
-        };
+        private Dictionary<String, IOperator> operatorsPriority = Operators.OperatorList;
 
         private List<string> seperated = new List<string>();
         public List<string> Expression
@@ -54,7 +44,7 @@ namespace CalculatorImpl
         {
             Clear();
 
-            char[] delimiterChars = { ' ', ',', '.', ':', '\t' };
+            char[] delimiterChars = { ' ', '\t' };
             seperated = new List<string>(infixNotation.Split(delimiterChars));
 
             bool res = Calculate();
