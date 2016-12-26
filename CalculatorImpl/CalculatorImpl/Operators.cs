@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CalculatorImpl
+namespace Calculator
 {
     public interface IOperator
     {
@@ -25,6 +25,7 @@ namespace CalculatorImpl
             { BraceL.Operator, new BraceL()},
             { BraceR.Operator, new BraceR()},
             { Percentage.Operator, new Percentage()},
+            { Point.Operator, new Point()},
         };
 
         public static Dictionary<String, IOperator> OperatorList
@@ -138,7 +139,7 @@ namespace CalculatorImpl
     {
         public static string Operator = ".";
         public string GetOperator { get { return Operator; } }
-        public int Priority { get { return 3; } }
+        public int Priority { get { return 4; } }
         public int NumberOfOperand { get { return 2; } }
 
         public bool GetResult(double left, double right, out double result)

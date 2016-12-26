@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CalculatorImpl
+namespace Calculator
 {
-    class CalculatorImpl
+    public class CalculatorImpl
     {
         public enum WorkingStatus
         {
